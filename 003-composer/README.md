@@ -1,4 +1,4 @@
-# Laravel 中 composer 的自动加载
+# composer 基本原理
 
 ## 启动
 
@@ -12,7 +12,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 `vendor/composer/autoload_real.php'`：
 
-这个类不负责具体功能逻辑，只做了两件事：初始化自动加载类、注册自动加载类。
+`autoload.php` 不负责具体功能逻辑，只做了两件事：初始化自动加载类、注册自动加载类。
 
 `autoload_real.php` 中的类名为 `ComposerAutoloaderInit...` 这可能是为防止与用户自定义类名跟这个类重复冲突，加上了哈希值。
 
@@ -113,6 +113,7 @@ public static function loadClassLoader($class)
 对自动加载类的初始化，主要是给自动加载核心类初始化顶级命名空间映射。
 
 初始化的方法有两种：
+
 1. 使用 `autoload_static` 进行静态初始化
 2. 调用核心类接口初始化
 
@@ -136,9 +137,9 @@ class ComposerStaticInit76e88f0b305cd64c7c84b90b278c31db
     public static $prefixLengthsPsr4 = array (...);
     public static $prefixDirsPsr4 = array (...);
     public static $fallbackDirsPsr4 = array (...);
-    public static $prefixesPsr0 = array (...); 
+    public static $prefixesPsr0 = array (...);
     public static $classMap = array array (...);
- 
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
@@ -158,7 +159,7 @@ class ComposerStaticInit76e88f0b305cd64c7c84b90b278c31db
 值得注意的是这个函数返回的是一个匿名函数，为什么呢？原因就是 `ClassLoader` 中的 `prefixLengthsPsr4` 、`prefixDirsPsr4` 等等方法都是 `private` 的。普通的函数没办法给类的 `private` 成员变量赋值。利用匿名函数的绑定功能就可以将把匿名函数转为 `ClassLoader` 类的成员函数。
 
 关于匿名函数的 [绑定功能](http://www.cnblogs.com/yjf512/p/4421289.html)。
- 
+
 接下来就是 顶级命名空间 初始化的关键了。
 
 #### classMap
@@ -177,13 +178,13 @@ public static $classMap = array (
 
 ```php
 public static $prefixesPsr0 = array (
-    'P' => 
+    'P' =>
     array (
-        'Prophecy\\' => 
+        'Prophecy\\' =>
         array (
             0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
         ),
-        'Parsedown' => 
+        'Parsedown' =>
         array (
             0 => __DIR__ . '/..' . '/erusev/parsedown',
         ),
@@ -210,11 +211,11 @@ public static $prefixesPsr0 = array (
 
 ```php
 public static $prefixLengthsPsr4 = array (
-    'p' => 
+    'p' =>
     array (
         'phpDocumentor\\Reflection\\' => 25,
     ),
-    'Z' => 
+    'Z' =>
     array (
         'Zend\\Diactoros\\' => 15,
     ),
@@ -222,18 +223,18 @@ public static $prefixLengthsPsr4 = array (
 );
 
 public static $prefixDirsPsr4 = array (
-    'phpDocumentor\\Reflection\\' => 
+    'phpDocumentor\\Reflection\\' =>
     array (
         0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
         1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
     ),
-    'Zend\\Diactoros\\' => 
+    'Zend\\Diactoros\\' =>
     array (
         0 => __DIR__ . '/..' . '/zendframework/zend-diactoros/src',
     ),
     ...
-); 
+);
 ```
 
 `PSR4` 标准 `顶级命名空间` 映射用了两个数组，第一个和 `PSR0` 一样用命名空间第一个字母作为前缀索引，然后是 `顶级命名空间`，但是最终并不是文件路径，而是 `顶级命名空间` 的长度。为什么呢？因为 `PSR4` 的文件目录更加灵活，更加简洁。
@@ -253,7 +254,7 @@ Parsedown/example => __DIR__ . '/..' . '/erusev/parsedown/Parsedown/example.php
 Parsedown/example => __DIR__ . '/..' . '/erusev/parsedown/example.php
                                                 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 ```
- 
+
 举例：假如我们找 `Symfony\\Polyfill\\Mbstring\\example` 这个类，和 `PSR0` 一样通过前缀索引和字符串匹配我们得到了:
 
 ```
@@ -263,7 +264,7 @@ Parsedown/example => __DIR__ . '/..' . '/erusev/parsedown/example.php
 这条记录，键是顶级命名空间，值是命名空间的长度。拿到顶级命名空间后去 `$prefixDirsPsr4` 获取它的映射目录数组（注意映射目录可能不止一条）：
 
 ```php
-'Symfony\\Polyfill\\Mbstring\\' => 
+'Symfony\\Polyfill\\Mbstring\\' =>
 array (
     0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
 ),
@@ -277,7 +278,7 @@ __DIR__ . '/..' . '/symfony/polyfill-mbstring/example.php
 
 先验证磁盘上这个文件是否存在，如果不存在接着遍历。如果遍历后没有找到，则加载失败。
 
-自动加载核心类 `ClassLoader` 的静态初始化完成！ 
+自动加载核心类 `ClassLoader` 的静态初始化完成！
 
 > 其实还有 `$fallbackDirsPsr4`，暂未研究
 
@@ -337,9 +338,59 @@ public function register($prepend = false)
 
 一行代码实现自动加载。核心在 `ClassLoader` 的 `loadClass()` 函数上，这个函数负责按照 `PSR` 标准将顶层命名空间以下的内容转为对应的目录，也就是上面所说的将 `App\Console\Kernel` 中 `Console\Kernel` 这一段转为目录。
 
+## 自动加载全局函数 5
+
+`Composer` 不止可以自动加载命名空间，还可以加载全局函数。就是把全局函数写到特定的文件里面去，在程序运行前挨个 `require` 就行了。
+
+```php
+if ($useStaticLoader) {
+    // 静态初始化
+    $includeFiles = Composer\Autoload\ComposerStaticInit76e88f0b305cd64c7c84b90b278c31db::$files;
+} else {
+    // 普通初始化
+    $includeFiles = require __DIR__ . '/autoload_files.php';
+}
+foreach ($includeFiles as $fileIdentifier => $file) {
+    composerRequire76e88f0b305cd64c7c84b90b278c31db($fileIdentifier, $file);
+}
+```
+
+```php
+function composerRequire76e88f0b305cd64c7c84b90b278c31db($fileIdentifier, $file)
+{
+    if (empty($GLOBALS['__composer_autoload_files'][$fileIdentifier])) {
+        require $file;
+
+        $GLOBALS['__composer_autoload_files'][$fileIdentifier] = true;
+    }
+}
+```
+
+### 问题 1
+
+为什么不直接 `require` `$includeFiles` 里面的每个文件名，而要用类外面的函数 `composerRequire...` ？
+
+- 避免和用户定义函数冲突
+- 防止有人在全局函数所在的文件写 `$this` 或者 `self`
+
+假如 `$includeFiles` 有个 `app/helper.php` 文件，这个 `helper.php` 文件的函数外有一行代码： `$this->foo()`，如果引导类在 `getLoader()` 函数直接 `require($file)`，那么引导类就会运行这句代码，调用自己的 `foo()` 函数，这显然是错的。
+
+事实上 `helper.php` 就不应该出现 `$this` 或 `self` 这样的代码，这样写一般都是用户写错了的，一旦这样的事情发生：
+
+- 第一种情况：引导类恰好有 `foo()` 函数，那么就会莫名其妙执行了引导类的 `foo()`。
+- 第二种情况：引导类没有 `foo()` 函数，但是却甩出来引导类没有 `foo()` 方法这样的错误提示，用户不知道自己哪里错了。把 `require` 语句放到 **引导类的外面**，遇到 `$this` 或者 `self` ，程序就会告诉用户根本没有类， `$this` 或 `self` 无效，错误信息更加明朗。
+
+### 问题 2
+
+为什么要用 `hash` 作为 `$fileIdentifier`？
+
+这个变量是用来控制全局函数只被 `require` 一次的，那为什么不用 `require_once` 呢？事实上 `require_once` 比 `require` 效率低很多，使用全局变量 `$GLOBALS` 这样控制加载会更快。猜测另一个原因应该是 `require_once` 对相对路径的支持并不理想，所以 `composer` 尽量少用 `require_once`。
+
+##
+
 `ClassLoader` 将 `loadClass()` 函数注册到 `PHP SPL` 中的 `spl_autoload_register()` 里面去。这样，每当 PHP 遇到一个不认识的命名空间的时候，PHP 会自动调用注册到 `spl_autoload_register()` 里面的函数堆栈，运行其中的每个函数，直到找到命名空间对应的文件。
 
-```php 
+```php
 /**
  * Loads the given class or interface.
  *
@@ -373,7 +424,7 @@ public function findFile($class)
     if ($this->classMapAuthoritative || isset($this->missingClasses[$class])) {
         return false;
     }
-    
+
     // 如果启用扩展名，则使用 APCu 前缀来缓存已找到/未找到的类。 - 不清楚干啥的 暂没研究
     if (null !== $this->apcuPrefix) {
         $file = apcu_fetch($this->apcuPrefix.$class, $hit);
@@ -404,15 +455,14 @@ public function findFile($class)
 
 `loadClass()` 主要调用 `findFile()` 函数。`findFile()` 在解析命名空间的时候主要分为两部分：
 
-- `classMap` 直接看命名空间是否在映射数组 
+- `classMap` 直接看命名空间是否在映射数组
 - `findFileWithExtension()` 包含了 `PSR0`、`PSR4`
 
+如果我们在代码中写 `'phpDocumentor\Reflection\example`，PHP 会通过 SPL 调用 `loadClass` -> `findFile` -> `findFileWithExtension`。
 
-如果我们在代码中写 `'phpDocumentor\Reflection\example`，PHP 会通过 SPL 调用 loadClass -> findFile -> findFileWithExtension。
+- 首先默认用 `.php` 后缀名调用 `findFileWithExtension` 函数里，利用 `PSR4` 标准尝试解析目录文件，如果文件不存在则继续用 `PSR0` 标准解析
+- 如果解析出来的目录文件仍然不存在，但是环境是 `HHVM` 虚拟机，继续用后缀名 `.hh` 再次调用 `findFileWithExtension` 函数，如果不存在，说明此命名空间无法加载，放到 `classMap` 中设为 `false`，以便以后更快地加载
 
-- 首先默认用 .php 后缀名调用 findFileWithExtension 函数里，利用 PSR4 标准尝试解析目录文件，如果文件不存在则继续用 PSR0 标准解析
-- 如果解析出来的目录文件仍然不存在，但是环境是 HHVM 虚拟机，继续用后缀名 .hh 再次调用 findFileWithExtension 函数，如果不存在，说明此命名空间无法加载，放到 classMap 中设为 false，以便以后更快地加载
- 
 ### PSR4
 
 对于 `phpDocumentor\Reflection\example`，当尝试利用 `PSR4` 标准映射目录时，步骤如下：
@@ -428,11 +478,11 @@ $first = $class[0];
 // $first: p
 
 if (isset($this->prefixLengthsPsr4[$first])) {
-    /* 'p' => 
+    /* 'p' =>
     array (
         'phpDocumentor\\Reflection\\' => 25,
-    ), 
-    */ 
+    ),
+    */
     $subPath = $class;
     // $subPath: phpDocumentor\Reflection\example
     while (false !== $lastPos = strrpos($subPath, '\\')) {
@@ -441,19 +491,19 @@ if (isset($this->prefixLengthsPsr4[$first])) {
         $search = $subPath.'\\';
         if (isset($this->prefixDirsPsr4[$search])) {
             // search phpDocumentor\\Reflection\\
-            // $lastPos 25 
+            // $lastPos 25
 
-            /* 'phpDocumentor\\Reflection\\' => 
+            /* 'phpDocumentor\\Reflection\\' =>
                 array (
                     0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
                     1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
                     2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-                ), 
-            */ 
+                ),
+            */
             $pathEnd = DIRECTORY_SEPARATOR . substr($logicalPathPsr4, $lastPos + 1);
             // $pathEnd /example.php(hh)
 
-            foreach ($this->prefixDirsPsr4[$search] as $dir) { 
+            foreach ($this->prefixDirsPsr4[$search] as $dir) {
                 // 遍历 3 个
                 if (file_exists($file = $dir . $pathEnd)) {
                     // $file __DIR__ . '/..' . /phpdocumentor/type-resolver/src/example.php(hh)`
@@ -462,18 +512,18 @@ if (isset($this->prefixLengthsPsr4[$first])) {
             }
         }
     }
-} 
+}
 ```
 
 ### PSR0
 
-如果 PSR4 标准加载失败，则要进行 PSR0 标准加载。对于 `phpDocumentor\Reflection\example`，当尝试利用 `PSR0` 标准映射目录时，步骤如下：
- 
+如果 `PSR4` 标准加载失败，则要进行 `PSR0` 标准加载。对于 `phpDocumentor\Reflection\example`，当尝试利用 `PSR0` 标准映射目录时，步骤如下：
+
 ```php
 // $class: phpDocumentor\Reflection\example
 
 // PSR-0 lookup
-if (false !== $pos = strrpos($class, '\\')) { 
+if (false !== $pos = strrpos($class, '\\')) {
     // namespaced class name
     $logicalPathPsr0 = substr($logicalPathPsr4, 0, $pos + 1)
         . strtr(substr($logicalPathPsr4, $pos + 1), '_', DIRECTORY_SEPARATOR);
@@ -483,19 +533,19 @@ if (false !== $pos = strrpos($class, '\\')) {
 }
 
 // $logicalPathPsr0: phpDocumentor/Reflection/example.php(hh)`
-if (isset($this->prefixesPsr0[$first])) { 
+if (isset($this->prefixesPsr0[$first])) {
     foreach ($this->prefixesPsr0[$first] as $prefix => $dirs) {
-        /* 'P' => 
+        /* 'P' =>
         array (
-            'Prophecy\\' => 
+            'Prophecy\\' =>
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
             ),
-            'Parsedown' => 
+            'Parsedown' =>
             array (
                 0 => __DIR__ . '/..' . '/erusev/parsedown',
             ),
-        ), */ 
+        ), */
         if (0 === strpos($class, $prefix)) {
             foreach ($dirs as $dir) {
                 if (file_exists($file = $dir . DIRECTORY_SEPARATOR . $logicalPathPsr0)) {
@@ -508,53 +558,6 @@ if (isset($this->prefixesPsr0[$first])) {
 }
 ```
 
-## 自动加载全局函数 5
-
-Composer 不止可以自动加载命名空间，还可以加载全局函数。就是把全局函数写到特定的文件里面去，在程序运行前挨个 `require` 就行了。
-
-```php
-if ($useStaticLoader) {
-    // 静态初始化
-    $includeFiles = Composer\Autoload\ComposerStaticInit76e88f0b305cd64c7c84b90b278c31db::$files;
-} else {
-    // 普通初始化
-    $includeFiles = require __DIR__ . '/autoload_files.php';
-}
-foreach ($includeFiles as $fileIdentifier => $file) {
-    composerRequire76e88f0b305cd64c7c84b90b278c31db($fileIdentifier, $file);
-} 
-```
-
-```php
-function composerRequire76e88f0b305cd64c7c84b90b278c31db($fileIdentifier, $file)
-{
-    if (empty($GLOBALS['__composer_autoload_files'][$fileIdentifier])) {
-        require $file;
-
-        $GLOBALS['__composer_autoload_files'][$fileIdentifier] = true;
-    }
-}
-```
-
-### 问题 1
-
-为什么不直接 `require` `$includeFiles` 里面的每个文件名，而要用类外面的函数 `composerRequire...` ？
-
-- 避免和用户定义函数冲突
-- 防止有人在全局函数所在的文件写 `$this` 或者 `self`
-
-假如 `$includeFiles` 有个 `app/helper.php` 文件，这个 `helper.php` 文件的函数外有一行代码： `$this->foo()`，如果引导类在 `getLoader()` 函数直接 `require($file)`，那么引导类就会运行这句代码，调用自己的 `foo()` 函数，这显然是错的。
-
-事实上 `helper.php` 就不应该出现 `$this` 或 `self` 这样的代码，这样写一般都是用户写错了的，一旦这样的事情发生：
-- 第一种情况：引导类恰好有 `foo()` 函数，那么就会莫名其妙执行了引导类的 `foo()`。
-- 第二种情况：引导类没有 `foo()` 函数，但是却甩出来引导类没有 `foo()` 方法这样的错误提示，用户不知道自己哪里错了。把 `require` 语句放到 **引导类的外面**，遇到 `$this` 或者 `self` ，程序就会告诉用户根本没有类， `$this` 或 `self` 无效，错误信息更加明朗。
-
-### 问题 2
-
-为什么要用 `hash` 作为 `$fileIdentifier`？
-
-这个变量是用来控制全局函数只被 `require` 一次的，那为什么不用 `require_once` 呢？事实上 `require_once` 比 `require` 效率低很多，使用全局变量 `$GLOBALS` 这样控制加载会更快。猜测另一个原因应该是 `require_once` 对相对路径的支持并不理想，所以 `composer` 尽量少用 `require_once`。
-
-## Reference 
+## References
 
 > - [PHP Composer - 初始化源码分析](https://github.com/LeoYang90/laravel-source-analysis/blob/master/PHP%20Composer%E2%80%94%E2%80%94%20%E5%88%9D%E5%A7%8B%E5%8C%96%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.md)

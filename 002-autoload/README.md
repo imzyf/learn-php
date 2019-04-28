@@ -4,15 +4,15 @@
 
 `require_once` 加载示例：
 
-```
+```php
 php no_autoload.php
 ```
 
-## __autoload
+## \_\_autoload
 
 如果发现这个类没有加载，就会自动运行 `__autoload()` 函数。
 
-``` 
+```php
 php autoload.php
 ```
 
@@ -22,7 +22,7 @@ php autoload.php
 
 将类名与实际的磁盘文件对应起来，就可以实现 `lazy loading` 的效果。
 
-### __autoload 存在的问题
+### \_\_autoload 存在的问题
 
 实现中，许多类库由不同的开发人员编写的，其类名与实际的磁盘文件的映射规则不尽相同。这时如果要实现类库文件的自动加载，就必须在 `__autoload()` 函数中将所有的映射规则全部实现。浙江导致函数非常复杂甚至无法实现。
 
@@ -36,7 +36,7 @@ php autoload.php
 
 SPL（Standard PHP Library）是用于解决典型问题（standard problems）的一组接口与类的集合。
 
-```
+```php
 php spl_autoload.php
 
 php spl_static_autoload.php
@@ -55,7 +55,7 @@ php spl_static_autoload.php
 - PSR-4 中，在类名中使用下划线没有任何特殊含义。而 PSR-0 则规定类名中的 `下划线 _` 会被转化成目录分隔符。
 - PSR-4 带来更简洁的文件结构。
 
-```
+```php
 {
     "psr-4": {
        "Foo\\": "src/"
@@ -65,7 +65,7 @@ php spl_static_autoload.php
 
 当试图自动加载 `Foo\Bar\Baz` class 时，回去寻找 `src/Bar/Baz.php` 这个文件。
 
-```
+```php
 {
     "psr-0": {
        "Foo\\": "src/"
@@ -85,6 +85,7 @@ php spl_static_autoload.php
 > [自动加载 - phpcomposer.com](https://docs.phpcomposer.com/01-basic-usage.html)
 
 你可以在 `composer.json` 的 `autoload` 字段中增加自己的 `autoloader`：
+
 ```
 ...
     "autoload": {
@@ -100,7 +101,7 @@ php spl_static_autoload.php
 此时 `Lib` 会在你项目的根目录，与 `vendor` 文件夹同级。例如 `Lib/Imzyf/Model/Person.php` 文件应该包含 `Imzyf\Model\Person` 类。
 
 添加 `autoload` 字段后，你应该再次运行 `install` 命令来生成 `vendor/autoload.php` 文件。
- 
+
 ```
 $ cd composer-autoload
 $ php test.php
@@ -110,8 +111,8 @@ $ php test.php
 
 `classmap` 引用的所有组合，都会在 `install/update` 过程中生成，并存储到 `vendor/composer/autoload_classmap.php` 文件中。这个 `map` 是经过扫描指定目录（同样支持直接精确到文件）中所有的 `.php` 和 `.inc` 文件里内置的类而得到的。
 
-你可以用 `classmap` 生成支持支持自定义加载的不遵循 `PSR-0/4 `规范的类库。要配置它指向需要的目录，以便能够准确搜索到类文件。
- 
+你可以用 `classmap` 生成支持支持自定义加载的不遵循 `PSR-0/4`规范的类库。要配置它指向需要的目录，以便能够准确搜索到类文件。
+
 ```
 {
     "autoload": {
@@ -120,8 +121,8 @@ $ php test.php
 }
 ```
 
-## Reference
+## References
 
-> [类的自动加载 - php.net](https://www.php.net/manual/zh/language.oop5.autoload.php)
-> [PHP学习 之 autoload](https://www.jianshu.com/p/8c839edb79d7)
-> [composer.json 架构](https://docs.phpcomposer.com/04-schema.html)
+> - [类的自动加载 - php.net](https://www.php.net/manual/zh/language.oop5.autoload.php)
+> - [PHP 学习 之 autoload](https://www.jianshu.com/p/8c839edb79d7)
+> - [composer.json 架构](https://docs.phpcomposer.com/04-schema.html)

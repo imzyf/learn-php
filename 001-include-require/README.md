@@ -1,4 +1,4 @@
-# include、require、*_once
+# include、require、\*\_once
 
 ## 实验
 
@@ -8,7 +8,7 @@
 
 - `require` 语句的性能与 `include` 相类似，都是包括并运行指定文件
 
-1. 被包含文件先按参数给出的路径寻找，如果没有给出目录（只有文件名）时则按照 `include_path（``include_path=".:/php/includes"`） 指定的目录寻找
+1. 被包含文件先按参数给出的路径寻找，如果没有给出目录（只有文件名）时则按照 `include_path（include_path=".:/php/includes"`） 指定的目录寻找
 1. 如果在 `include_path` 下没找到该文件则 `include` 最后才在调用脚本文件所在的目录和当前工作目录下寻找
 
 ## 不同点
@@ -21,10 +21,10 @@
 
 `require` 和 `include` 语句是语言结构，不是真正的函数，因此其参数没有必要用括号将其括起来。
 
-`return` 也是语言结构。当用引用返回值时 **永远** 不要使用括号。只能通过引用返回变量，而不是语句的结果。如果使用 `return ($a);` 时其实不是返回一个变量，而是表达式 `($a)` 的值（当然，此时该值也正是 `$a` 的值）。 
+`return` 也是语言结构。当用引用返回值时 **永远** 不要使用括号。只能通过引用返回变量，而不是语句的结果。如果使用 `return ($a);` 时其实不是返回一个变量，而是表达式 `($a)` 的值（当然，此时该值也正是 `$a` 的值）。
 
-> 这里有个疑惑，没能举出一个例子证明 `return ($a);` 与 `return $a;` 不同。 
+> 这里有个疑惑，没能举出一个例子证明 `return ($a);` 与 `return $a;` 不同。
 
-## Reference
+## References
 
-> [include - php.net](https://www.php.net/manual/zh/function.include.php)
+> - [include - php.net](https://www.php.net/manual/zh/function.include.php)
