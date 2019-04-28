@@ -78,10 +78,13 @@ php spl_static_autoload.php
 
 ## Composer
 
-> [composer.json 架构](https://docs.phpcomposer.com/04-schema.html)
+[Composer](https://docs.phpcomposer.com/00-intro.html) 是 `PHP` 的一个依赖管理工具。它允许你申明项目所依赖的代码库，它会在你的项目中为你安装他们。
 
-`composer.json`
+`Composer` 帮助我们下载好了符合 `PSR0/PSR4` 标准的第三方库，并把文件放在相应位置。帮我们写了 `__autoload()` 函数，注册到了 `spl_register()` 函数，当我们想用第三方库的时候直接使用命名空间即可。
 
+> [自动加载 - phpcomposer.com](https://docs.phpcomposer.com/01-basic-usage.html)
+
+你可以在 `composer.json` 的 `autoload` 字段中增加自己的 `autoloader`：
 ```
 ...
     "autoload": {
@@ -91,6 +94,12 @@ php spl_static_autoload.php
     },
 ...
 ```
+
+`Composer` 将注册一个 `PSR-4` `autoloader` 到 `Imzyf` 命名空间。
+
+此时 `Lib` 会在你项目的根目录，与 `vendor` 文件夹同级。例如 `Lib/Imzyf/Model/Person.php` 文件应该包含 `Imzyf\Model\Person` 类。
+
+添加 `autoload` 字段后，你应该再次运行 `install` 命令来生成 `vendor/autoload.php` 文件。
  
 ```
 $ cd composer-autoload
@@ -115,3 +124,4 @@ $ php test.php
 
 > [类的自动加载 - php.net](https://www.php.net/manual/zh/language.oop5.autoload.php)
 > [PHP学习 之 autoload](https://www.jianshu.com/p/8c839edb79d7)
+> [composer.json 架构](https://docs.phpcomposer.com/04-schema.html)
