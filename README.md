@@ -6,4 +6,5 @@
 
 - [001 - include、require、\*\_once](./001-include-require)
 - [002 - autoload 自动加载](./002-autoload)
-- [003 - composer 基本原理](./003-laravel-composer)
+- [003 - composer 基本原理](./003-composer)
+- [004 - Laravel Facades](./004-laravel-facades)

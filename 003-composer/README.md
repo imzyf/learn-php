@@ -16,7 +16,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 `autoload_real.php` 中的类名为 `ComposerAutoloaderInit...` 这可能是为防止与用户自定义类名跟这个类重复冲突，加上了哈希值。
 
-其实还有一个做法我们更加熟悉，那就是不直接定义类名，而是定义一个命名空间。这里为什么不定义一个命名空间呢？个人理解：命名空间一般都是为了复用，而这个类只需要运行一次即可，以后也不会用得到，用哈希值更加合适。
+其实还有一个做法我们更加熟悉，是定义一个命名空间。这里为什么不定义一个命名空间呢？一种理解：命名空间一般都是为了复用，而这个类只需要运行一次即可，以后也不会用得到，用哈希值更加合适。
 
 ## autoload_real.php
 
@@ -106,13 +106,9 @@ public static function loadClassLoader($class)
 
 那为什么不跟引导类一样用个哈希值呢？原因是：这个类是可以复用的，框架允许用户使用这个类。
 
-> 个人疑问：为什么这样就解决了与用户命名空间的冲突？
-
 ## 初始化核心类对象 3
 
-对自动加载类的初始化，主要是给自动加载核心类初始化顶级命名空间映射。
-
-初始化的方法有两种：
+对自动加载类的初始化，主要是给自动加载核心类初始化顶级命名空间映射。初始化的方法有两种：
 
 1. 使用 `autoload_static` 进行静态初始化
 2. 调用核心类接口初始化
@@ -195,13 +191,13 @@ public static $prefixesPsr0 = array (
 
 为了快速找到顶级命名空间，这里使用命名空间第一个字母作为前缀索引。这个映射的用法比较明显，假如我们有 `Parsedown/example` 这样的命名空间，首先通过首字母 `P`，找到：
 
-```
+```php
 'P' => array (...)
 ```
 
 这个数组，然后就会遍历这个数组来和 `Parsedown/example` 比较，发现第一个 `Prophecy` 不符合，第二个 `Parsedown` 符合，然后得到了映射目录（映射目录可能不止一个）：
 
-```
+```php
 0 => __DIR__ . '/..' . '/erusev/parsedown',
 ```
 
@@ -386,7 +382,7 @@ function composerRequire76e88f0b305cd64c7c84b90b278c31db($fileIdentifier, $file)
 
 这个变量是用来控制全局函数只被 `require` 一次的，那为什么不用 `require_once` 呢？事实上 `require_once` 比 `require` 效率低很多，使用全局变量 `$GLOBALS` 这样控制加载会更快。猜测另一个原因应该是 `require_once` 对相对路径的支持并不理想，所以 `composer` 尽量少用 `require_once`。
 
-##
+## 运行
 
 `ClassLoader` 将 `loadClass()` 函数注册到 `PHP SPL` 中的 `spl_autoload_register()` 里面去。这样，每当 PHP 遇到一个不认识的命名空间的时候，PHP 会自动调用注册到 `spl_autoload_register()` 里面的函数堆栈，运行其中的每个函数，直到找到命名空间对应的文件。
 
@@ -557,6 +553,32 @@ if (isset($this->prefixesPsr0[$first])) {
     }
 }
 ```
+
+## Q&A
+
+个人一些疑问：
+
+### 防止用户自定义与 ClassLoader 命名空间冲突
+
+```php
+spl_autoload_register(array('ComposerAutoloaderInit76e88f0b305cd64c7c84b90b278c31db', 'loadClassLoader'), true, true);
+self::$loader = $loader = new \Composer\Autoload\ClassLoader();
+spl_autoload_unregister(array('ComposerAutoloaderInit76e88f0b305cd64c7c84b90b278c31db', 'loadClassLoader'));
+```
+
+为什么这样可以解决：与用户也定义了个 `\Composer\Autoload\ClassLoader` 命名空间，导致自动加载错误文件。
+
+与第四个参数 `$prepend` `true` 有关吗？
+
+### composer StaticLoader 有什么优势
+
+`composer` 在加载类和加载全局方法时，都有两种方式。
+
+```
+$useStaticLoader = PHP_VERSION_ID >= 50600 && !defined('HHVM_VERSION') && (!function_exists('zend_loader_file_encoded') || !zend_loader_file_encoded());
+```
+
+以 `$useStaticLoader` 的值进行选择，为什么一定分两种，静态方法是有什么优势吗？
 
 ## References
 
