@@ -126,3 +126,5 @@ $ php test.php
 > - [类的自动加载 - php.net](https://www.php.net/manual/zh/language.oop5.autoload.php)
 > - [PHP 学习 之 autoload](https://www.jianshu.com/p/8c839edb79d7)
 > - [composer.json 架构](https://docs.phpcomposer.com/04-schema.html)
+
+-- EOF --

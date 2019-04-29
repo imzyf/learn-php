@@ -493,3 +493,9 @@ class PaymentGateway extends Facade
     }
 }
 ```
+
+## References
+
+> - [Laravel Facade - Facade 门面源码分析](https://leoyang90.gitbooks.io/laravel-source-analysis/content/Laravel%20Facade%E2%80%94%E2%80%94Facade%20%E9%97%A8%E9%9D%A2%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90.html)
+
+-- EOF --
