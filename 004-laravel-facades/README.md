@@ -4,9 +4,9 @@
 
 [Facades](https://learnku.com/docs/laravel/5.8/facades/3888) 为应用的 服务容器 提供了一个「静态」 接口。Laravel 自带了很多 `Facades`，可以访问绝大部分功能。Laravel `Facades` 实际是服务容器中底层类的 「静态代理」，相对于传统静态方法，在使用时能够提供更加灵活、更加易于测试、更加优雅的语法。
 
-`Facade` 的主要作用，是 **简化类调用的快捷语法**。因为在结构复杂，功能完善的框架中，往往类的结构，层次也比较复杂，Laravel 也是如此复杂的框架，因此为了简化使用，我们就定义了类的快捷访问方式，在 `Laravel` 中，就是 `Facade`！
+`Facade` 的主要作用，是 **简化类调用的快捷语法**。因为在结构复杂，功能完善的框架中，往往类的结构，层次也比较复杂，Laravel 也是如此复杂的框架，因此为了简化使用，我们就定义了类的快捷访问方式，在 Laravel 中，就是 `Facade`！
 
-常规设计模式中的 **外观模式**（Facade Pattern），就是解决快捷访问问题的，因此 `Laravel` 的 `Facade` 就是外观模式的实现。
+常规设计模式中的 **外观模式**（Facade Pattern），就是解决快捷访问问题的，因此 Laravel 的 `Facade` 就是 **外观模式** 的实现。
 
 Laravel 框架的核心就是个 `IoC` 容器即服务容器，功能类似于一个工厂模式，是个高级版的工厂。
 
@@ -52,7 +52,7 @@ class Route extends Facade
 }
 ```
 
-其实每个 `facade` 也就是重定义一下 `getFacadeAccessor` 函数就行了，这个函数返回服务的唯一名称：`router`。需要注意的是要确保这个名称可以用服务容器的 `make` 函数创建成功 `App::make('router')`。
+其实每个 `facade` 也就是重定义一下 `getFacadeAccessor()` 函数就行了，这个函数返回服务的唯一名称：`router`。需要注意的是要确保这个名称可以用服务容器的 `make` 函数创建成功 `App::make('router')`。
 
 那么当写出 `Route::get()` 这样的语句时，到底发生了什么呢？奥秘就在基类 `Facade` 中：
 
@@ -75,7 +75,7 @@ public static function __callStatic($method, $args)
 `Route` 没有静态 `get()`，PHP 就会调用这个魔术函数 `__callStatic`，这个魔术函数做了两件事：
 
 1. 获得对象实例
-2. 利用对象调用 `get()` 函数
+2. 调用实例方法 `$route->get()` 
 
 ```php
 // Get the root object behind the facade.
