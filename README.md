@@ -10,6 +10,9 @@
 - [009 - 流程控制](./009-control)
 - [010 - 变量](./010-variables)
 - [011 - 函数](./011-functions)
+- [012 - 正则表达式](./012-pcre)
+- [013 - 文件及目录](./013-filesystem)
+- [014 - 会话控制](./014-sessions)
 
 ## 读 Laravel Source Code
 

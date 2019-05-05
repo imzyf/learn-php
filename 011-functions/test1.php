@@ -8,6 +8,7 @@ function &mgFunc()
 }
 
 $a = mgFunc();
+// 返回引用
 $b = &mgFunc();
 $b = 100; 
 
