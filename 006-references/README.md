@@ -46,8 +46,26 @@ $ php demo5.php
 $ php demo6.php
 ```
 
+默认情况下，函数参数通过值传递（因而即使在函数内部改变参数的值，它并不会改变函数外部的值）。
+
+## 引用不是指针
+
+`=` replaces the 'destination's value; `= &` changes the destination.
+
+```
+$ php demo7.php
+```
+
 ## 练习
+
+读程序题
 
 ```
 $ php test1.php
+```
+
+利用引用无限级分类
+
+```
+$ php demo8.php
 ```
