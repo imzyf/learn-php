@@ -22,6 +22,10 @@
 
 > - [预定义变量 - php.net](https://www.php.net/manual/zh/reserved.variables.php)
 > - [$_SERVER - php.net](https://www.php.net/manual/zh/reserved.variables.server.php)
+
+### 整型溢出
+
+PHP 的整型数的字长和平台有关，对与 32 位操作系统，最大的整型是 2 的 31 次方，最小是负 2 的 31 次方。PHP 不支持无符号整数。运算结果超出后会返回 float。
  
 ## 常量
 
