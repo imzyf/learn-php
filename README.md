@@ -28,7 +28,11 @@
 
 ## Linux 基础
 
-## MySQL 基础
+## MySQL 
+
+- [018 - MySQL 基础](./018-mysql-base)
+- [019 - MySQL 索引](./019-mysql-index)
+- [020 - MySQL SQL](./020-mysql-sql)
 
 ## 程序设计
 
