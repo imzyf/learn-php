@@ -20,7 +20,8 @@
 成功
 
 - 200 ok
-- 204 已经成功处理 不含 content
+- 201 create success
+- 204 已经成功处理 不含 content，delete success
 - 206 部分内容处理
 
 ### 3xx
@@ -60,11 +61,8 @@
 
 工作原理
 
--
-
 ## HTTP 协议常见请求、响应头和请求方法
 
 - Content-Type
 - Accept
 - Origin
--
