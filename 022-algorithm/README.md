@@ -31,25 +31,21 @@ while (n <= 1) {
 空间 O(1)
 
 ```
-$ php bubble_sort_01.php
+$ php 01_bubble_sort.php
+```
+
+### 归并排序
+
+```
+$ php 03_merge_sort.php
 ```
 
 ### 插入排序
 
-## 希尔排序
-
-## 选择排序
-
-## 快速排序
-
-## 堆排序
-
-## 归并排序
-
-最快
+### 希尔排序
 
 ## 红包算法
 
 ```
-$ php red_package.php
+$ php 02_red_package.php
 ```
