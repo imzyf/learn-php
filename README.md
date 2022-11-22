@@ -1,6 +1,4 @@
-# reboot-php
-
-任何一门编程语言都应被尊重，重学 `PHP`。
+# Learn PHP
 
 ## 读 Laravel Source Code
 

@@ -28,8 +28,8 @@
 
 ## 魔术方法
 
-- __construct
-- __distruct
+- \_\_construct
+- \_\_distruct
 - ...
 
 ## 设计模式
